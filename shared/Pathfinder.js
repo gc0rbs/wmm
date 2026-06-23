@@ -58,8 +58,9 @@ Pathfinder.prototype.findPath = function(from,to,seek,nextTo){
 
         var neighbors = this.generateNeighbors(minFNode,end);
         // console.log(neighbors);
-        neighbors.forEach(function(neighbor){
-            if(closedSet.get(neighbor.x,neighbor.y)) return;
+        for(var ni = 0; ni < neighbors.length; ni++){
+            var neighbor = neighbors[ni];
+            if(closedSet.get(neighbor.x,neighbor.y)) continue;
 
             var g = minFNode.g + this.euclidean(minFNode,neighbor);
 
@@ -70,7 +71,7 @@ Pathfinder.prototype.findPath = function(from,to,seek,nextTo){
                 if (this.allowDiagonal) neighbor.setI(this.manhattan(neighbor, end));
                 if(!neighbor.opened) this.addToOpenSet(neighbor);
             }
-        },this);
+        }
     }
     return null;
 };
@@ -127,30 +128,30 @@ Pathfinder.prototype.addToOpenSet = function(node){
     node.opened = true;
 };
 
+// Hoisted to avoid re-allocating these literals on every generateNeighbors call.
+var DIAGONAL_OFFSETS = [[-1,0],[-1,-1],[0,-1],[1,-1],[1,0],[1,1], [0,1],[-1,1]];
+var ORTHOGONAL_OFFSETS = [[-1,0],[0,-1],[1,0],[0,1]];
+
 Pathfinder.prototype.generateNeighbors = function(node){
     var neighbors = [];
-    var offsets;
-    if(this.allowDiagonal){
-        offsets = [[-1,0],[-1,-1],[0,-1],[1,-1],[1,0],[1,1], [0,1],[-1,1]];
-    }else{
-        offsets = [[-1,0],[0,-1],[1,0],[0,1]];
-    }
+    var offsets = this.allowDiagonal ? DIAGONAL_OFFSETS : ORTHOGONAL_OFFSETS;
 
-    offsets.forEach(function(o,i){
+    for(var i = 0; i < offsets.length; i++){
+        var o = offsets[i];
         var n = this.getNode(node.x+o[0],node.y+o[1]);
         if(this.nextTo && n.equals(this.destination)){
             neighbors.push(n);
-            return;
+            continue;
         }
         // console.log(n,this.isWalkable(n));
-        if(!this.isWalkable(n)) return;
+        if(!this.isWalkable(n)) continue;
         if(this.allowDiagonal && !this.cutCorners && i%2 != 0){ // because corners are at odd positions in offsets array
             // Compute corner nodes that could be cut
-            if(!this.isWalkable(this.getNode(node.x,node.y+o[1]))) return;
-            if(!this.isWalkable(this.getNode(node.x+o[0],node.y))) return;
+            if(!this.isWalkable(this.getNode(node.x,node.y+o[1]))) continue;
+            if(!this.isWalkable(this.getNode(node.x+o[0],node.y))) continue;
         }
         neighbors.push(n);
-    },this);
+    }
     return neighbors;
 };
 
@@ -193,7 +194,8 @@ Pathfinder.prototype.chebyshev = function(A,B){
 };
 
 Pathfinder.prototype.euclidean = function(A,B){
-    return Math.sqrt(Math.pow(A.x-B.x,2)+Math.pow(A.y-B.y,2));
+    var dx = A.x-B.x, dy = A.y-B.y;
+    return Math.sqrt(dx*dx+dy*dy);
 };
 
 Pathfinder.prototype.heuristic = function(A,B){
