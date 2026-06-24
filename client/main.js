@@ -16,9 +16,16 @@ var TILE_HEIGHT = 32;
 var config = {
     //type: (navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? Phaser.CANVAS : Phaser.AUTO),
     type: Phaser.WEBGL,
-    width: VIEW_WIDTH*TILE_WIDTH,
-    height: VIEW_HEIGHT*TILE_HEIGHT,
-    parent: 'game',
+    scale: {
+        // Keep the game's internal resolution at its designed 1024x576 (16:9) so all the
+        // viewport-dependent logic (chunk culling, panel positions) still works, but scale
+        // the canvas up to fill the browser window. 16:9 fills a widescreen with no bars.
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        parent: 'game',
+        width: VIEW_WIDTH*TILE_WIDTH,
+        height: VIEW_HEIGHT*TILE_HEIGHT
+    },
     scene: [Boot, UI, Engine],
     dom: {
         createContainer: true
