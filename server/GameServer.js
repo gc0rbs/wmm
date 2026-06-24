@@ -170,6 +170,7 @@ GameServer.readMap = function(mapsPath,test,cb){
     GameServer.PFParameters = GameServer.config.get('pathfinding');
     GameServer.wildlifeParameters = GameServer.config.get('wildlife');
     GameServer.civsParameters = GameServer.config.get('civs');
+    GameServer.p2eParameters = GameServer.config.has('p2e') ? GameServer.config.get('p2e') : {enabled: false};
 
     GameServer.clientParameters = GameServer.config.get('client');
 

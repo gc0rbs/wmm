@@ -44,6 +44,9 @@ let Schemas = {
         inBuilding: {type: Number, min:-1, default: -1},
         savestamp: {type : Date, default: Date.now },
         gold: {type: Number, min: 0, default: 0},
+        tokens: {type: Number, min: 0, default: 0}, // P2E claimable token balance (off-chain)
+        claimedQuests: {type: []}, // keys of one-time P2E quests already rewarded
+        walletAddress: {type: String, default: ''}, // optional on-chain payout address
         classxp: mongoose.Schema.Types.Mixed,
         classlvl: mongoose.Schema.Types.Mixed,
         ap: mongoose.Schema.Types.Mixed,

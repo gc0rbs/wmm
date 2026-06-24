@@ -2,6 +2,7 @@ var clone = require('clone');
 
 import GameServer from "./GameServer";
 import Inventory from "../shared/Inventory";
+import P2E from './P2E'
 import Utils from '../shared/Utils'
     
 function Region(data){
@@ -79,6 +80,7 @@ Region.prototype.setGoals = function(){
     this.counts = {};
     this.missionTypes = {};
     this.XPtable = {};
+    this.tokenTable = {}; // P2E token reward per mission count
     this.missionLabels = {};
     GameServer.missionsData.missions.forEach(this.addMission, this);
     this.craft.toList().forEach(function(item){
@@ -111,6 +113,13 @@ Region.prototype.addMission = function(mission){
     for(var clas in mission.rewards){
         this.XPtable[mission.count][clas] += mission.rewards[clas];
     }
+    if(mission.tokenReward){
+        this.tokenTable[mission.count] = {
+            amount: mission.tokenReward,
+            claimOnce: !!mission.claimOnce,
+            name: mission.name
+        };
+    }
 };
 
 Region.prototype.updateCounts = function(){
@@ -123,6 +132,11 @@ Region.prototype.updateCounts = function(){
     this.updateCount('civkilled',this.civCasualties[0]);
     this.updateCount('playerfood',this.food[0]);
     this.updateCount('resources',this.visibleNodes);
+    // P2E quest progress (reuses existing region aggregates; no-op when the count
+    // isn't active for the current region status).
+    this.updateCount('p2e_settle',this.playerBuildings);
+    this.updateCount('p2e_defense',this.civCasualties[0]);
+    this.updateCount('p2e_market',this.buildingsTypes[4] || 0);
     for(var type in this.buildingsTypes){
         this.updateCount('building:'+type,this.buildingsTypes[type]);
     }
@@ -218,6 +232,12 @@ Region.prototype.event = function(event, player, extra){
                 var xp = this.XPtable[count];
                 for(var clas in xp){
                     if(xp[clas] > 0) player.gainClassXP(clas, xp[clas], true);
+                }
+                var token = this.tokenTable[count];
+                if(token && token.amount > 0){
+                    // Key scopes claimOnce per-region: a player can earn each P2E quest
+                    // once per region they help develop.
+                    P2E.grant(player, token.amount, 'region'+this.id+':'+count, token.claimOnce, token.name);
                 }
             }
         }

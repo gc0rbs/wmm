@@ -169,6 +169,55 @@
           "0": 5,
           "3": 5
         }
+      },
+      {
+        "type": "Settlement",
+        "regionStatus": [0],
+        "name": "Pioneer's Stake",
+        "desc": "Help raise the first buildings of a brand-new region. The frontier rewards the bold: earn WST tokens the first time you contribute to settling a region.",
+        "atlas": "buildingsicons",
+        "frame": "lumbercamp",
+        "count": "p2e_settle",
+        "goal": 3,
+        "p2e": true,
+        "claimOnce": true,
+        "tokenReward": 10,
+        "rewards": {
+          "3": 2
+        }
+      },
+      {
+        "type": "Defense",
+        "regionStatus": [1],
+        "name": "Frontline Bounty",
+        "desc": "Take up arms when a region comes under threat. Earn WST tokens the first time you help cut down the Civ raiders menacing the settlement.",
+        "atlas": "buildingsicons",
+        "frame": "tower",
+        "count": "p2e_defense",
+        "goal": 10,
+        "p2e": true,
+        "claimOnce": true,
+        "tokenReward": 25,
+        "rewards": {
+          "0": 3
+        }
+      },
+      {
+        "type": "Construction",
+        "regionStatus": [2],
+        "name": "Free Market Pioneer",
+        "desc": "Kick-start a region's economy by helping stand up its first shop. Earn WST tokens for opening the region up to trade.",
+        "atlas": "buildingsicons",
+        "frame": "shop",
+        "count": "p2e_market",
+        "goal": 1,
+        "p2e": true,
+        "claimOnce": true,
+        "tokenReward": 20,
+        "rewards": {
+          "1": 3,
+          "2": 2
+        }
       }
     ]
 }

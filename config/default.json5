@@ -89,6 +89,12 @@ Main config file of the game, see https://github.com/Jerenaux/westward/wiki/Conf
     dev: {
         mapsPath: '/../../maps' // relative to tools directory
     },
+    p2e: { // Play-to-earn token rewards
+        enabled: true, // master switch; when false, no tokens are accrued
+        tokenSymbol: 'WST', // display symbol for the in-game claimable token (Westward Token)
+        maxBalance: 1000000, // safety cap on a single player's claimable balance
+        onChain: false // when true, P2E.settle() would push balances on-chain (not wired yet)
+    },
     client: { // config packet sent to the clients for client-side configuration
         boot:{
             autoBoot: true, // skip screen with "play" button por not

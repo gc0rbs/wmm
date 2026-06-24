@@ -34,6 +34,9 @@ function Player() {
     this.belt = new Inventory(3); //TODO: conf
     this.sid = 0;
     this.gold = 0;
+    this.tokens = 0; // P2E claimable token balance (off-chain)
+    this.claimedQuests = []; // keys of one-time P2E quests already rewarded
+    this.walletAddress = ''; // optional on-chain payout address
     this.inBuilding = -1;
 
     this.classxp = {
@@ -376,6 +379,16 @@ Player.prototype.applyAbility = function(aid){
 
 Player.prototype.hasAbility = function(aid){
     return this.abilities.includes(aid);
+};
+
+// Credit P2E tokens to the player's claimable balance. Returns the amount actually
+// added after clamping to the configured cap. Granting is routed through P2E.grant().
+Player.prototype.gainTokens = function (nb) {
+    var cap = (GameServer.p2eParameters && GameServer.p2eParameters.maxBalance) || 1000000;
+    var before = this.tokens;
+    this.setOwnProperty('tokens', Utils.clamp(this.tokens + nb, 0, cap));
+    this.save();
+    return this.tokens - before;
 };
 
 Player.prototype.giveGold = function (nb, notify) {
@@ -825,6 +838,9 @@ Player.prototype.getDataFromDb = function (data) {
     this.y = Utils.clamp(data.y, 0, World.worldHeight - 1);
     this.classxp = data.classxp;
     this.classlvl = data.classlvl;
+    this.tokens = data.tokens || 0;
+    this.claimedQuests = data.claimedQuests || [];
+    this.walletAddress = data.walletAddress || '';
     this.abilities = data.abilities;
     this.setOwnProperty('inBuilding', data.inBuilding);
 
