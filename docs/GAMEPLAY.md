@@ -29,8 +29,9 @@ the frontier pushes on.
 
 - **One continuous shared world**, not instanced rooms. Size: **1,500 × 1,140 tiles**
   (50×57 chunks of 30×20 tiles each — `maps/master.json`).
-- **23 named regions** (`regions.json`) — e.g. *New Beginning*, *Saarinen*,
-  *Mawllyn*, *Bachplaen* — the persistent political/objective units of the map.
+- **23 named regions** — the persistent political/objective units of the map. Each
+  carries both a formal name and a frontier name (player-facing); see the zone
+  table below.
 - **Fog of war:** the map starts hidden and is revealed by exploration. Discovering
   terrain, resources, and enemy camps is itself a tracked activity.
 - **Area-of-Interest (AOI) streaming:** the server only sends each player the slice
@@ -38,6 +39,52 @@ the frontier pushes on.
 - **Resource depletion + respawn:** harvestable nodes deplete as players extract
   them and respawn on a **24-hour cycle** (86,400 turns), driving the constant
   expansion outward.
+
+### Zone tiers — the difficulty/distance gradient
+
+Every region has a permanent **type** that grades the world from civilized to wild.
+This is the spatial spine of the frontier fantasy: safe towns at your back, danger
+and reward ahead.
+
+| Tier | Role |
+|------|------|
+| 🟢 **Safe** | Civilized starting zones — onboarding, low danger, towns already standing |
+| 🟠 **Frontier** | The contested middle — active risk/reward, the live edge of settlement |
+| 🔴 **Remote** | Far wild lands — highest danger, richest resources |
+| 🌊 **Sea** | Water regions bordering the map; seas are named after their coasts |
+
+**Full region list (23):**
+
+| ID | Tier | Formal name | Frontier name (player-facing) |
+|----|------|-------------|-------------------------------|
+| 0  | Safe | New Beginning | **Cedar Crossing** |
+| 1  | Safe | Saarinen | **Red Mesa** |
+| 15 | Safe | Draigllyn | **Copper Gulch** |
+| 16 | Safe | Penrhyn | **Willow Bend** |
+| 4  | Frontier | Mawllyn | **Broken Ridge** |
+| 7  | Frontier | Rhos Goch | **Dry Creek Pass** |
+| 8  | Frontier | Ffynnon Du | **Pine Barrens** |
+| 11 | Frontier | Bachplaen | **Rattlesnake Flats** |
+| 13 | Frontier | Austurpren | **Iron Mesa** |
+| 14 | Frontier | Cymsyg | **Salt Wash** |
+| 2  | Remote | Gwydrin | **Ghost Canyon** |
+| 3  | Remote | Cwm Isaf | **Mudflat Shore** |
+| 5  | Remote | Morlais | **Sulfur Bottom** |
+| 6  | Remote | Yr Hen Gaer | **Old Fort Bluff** |
+| 9  | Remote | Tal Gwyn | **Quartz Hollow** |
+| 10 | Remote | Porth Garn | **Driftwood Bay** |
+| 12 | Remote | Maen Llwyd | **Graystone Shelf** |
+| 17 | Sea | Bay of Penrhyn | **Willow Bend Bay** |
+| 18 | Sea | Great Ocean | **Western Deep** |
+| 19 | Sea | Sea of Penrhyn | **Willow Bend Sea** |
+| 20 | Sea | Sea of Morlais | **Sulfur Bottom Sea** |
+| 21 | Sea | Sea of Draigllyn | **Copper Gulch Sea** |
+| 22 | Sea | Sea of Saarinen | **Red Mesa Sea** |
+
+> **Two axes of the world.** A region's **tier** (above) is *permanent* — geography.
+> Its **status** (below) is *dynamic* — the lifecycle every region cycles through.
+> So a region can be a *Remote* zone (always hard) that is currently *Occupied*
+> (under attack). Tier × status is what makes each region feel distinct.
 
 ### Region lifecycle — the heartbeat of the world
 
