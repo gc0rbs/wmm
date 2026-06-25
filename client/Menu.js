@@ -20,7 +20,7 @@ function Menu(title){
 }
 
 Menu.prototype.makeTitle = function(title){
-    this.title = new UIHolder(945,15,'right','big',this.scene);
+    this.title = new UIHolder(UI.getGameWidth()-79,15,'right','big',this.scene);
     this.title.setButton(this.hide.bind(this));
     this.title.setText(title);
 };

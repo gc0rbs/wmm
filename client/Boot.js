@@ -30,6 +30,14 @@ var Boot = new Phaser.Class({
         Boot.masterData = masterData;
 
         Boot.background = this.add.image(0,0,'background').setOrigin(0);
+        // The canvas fills the whole browser window, so stretch the boot backdrop to cover
+        // it (rather than leaving a black margin around the 1024x576 image), and keep it
+        // covering when the window is resized.
+        var coverBackground = function(size){
+            Boot.background.setDisplaySize(size.width, size.height);
+        };
+        coverBackground(this.scale.gameSize);
+        this.scale.on('resize', coverBackground);
 
         this.readyStages = {
             1: this.launchUI, // 1 for getting boot parameters
@@ -62,8 +70,11 @@ var Boot = new Phaser.Class({
     },
 
     displayTitle: function(){
-        Boot.titleBg = this.add.image(512,218,'logo','bg').setAlpha(0).setScale(0.5);
-        Boot.title = this.add.image(512,218,'logo','text').setAlpha(0).setScale(0.5);
+        // Center on the live canvas; keep the original vertical offset relative to centre.
+        var cx = this.scale.gameSize.width / 2;
+        var cy = this.scale.gameSize.height / 2 - 70;
+        Boot.titleBg = this.add.image(cx,cy,'logo','bg').setAlpha(0).setScale(0.5);
+        Boot.title = this.add.image(cx,cy,'logo','text').setAlpha(0).setScale(0.5);
 
         this.tweens.add({
             targets: Boot.titleBg,
@@ -81,10 +92,12 @@ var Boot = new Phaser.Class({
     },
 
     displayButton: function(){
+        var cx = this.scale.gameSize.width / 2;
+        var cy = this.scale.gameSize.height / 2;
         Boot.buttons = [];
-        Boot.buttons.push(new BigButton(512,400,'Play',UI.launchGameMode,true)); // true = bigger
+        Boot.buttons.push(new BigButton(cx,cy+112,'Play',UI.launchGameMode,true)); // true = bigger
 
-        if(Client.gameConfig.boot.offerTutorial) Boot.buttons.push(new BigButton(512, 450, 'Tutorial', UI.launchTutorialMode,true));
+        if(Client.gameConfig.boot.offerTutorial) Boot.buttons.push(new BigButton(cx, cy+162, 'Tutorial', UI.launchTutorialMode,true));
 
         Boot.buttons.forEach(function(b){
             b.display();

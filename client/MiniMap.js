@@ -27,7 +27,7 @@ function MiniMap(){
 
     var w = 150;
     // var rect = UI.scene.add.rectangle(1024-w,0,w,w,0xffffff);
-    var rect = UI.scene.add.image(1024-w,0,'UI','invisible');
+    var rect = UI.scene.add.image(Engine.getGameConfig().width-w,0,'UI','invisible');
     rect.setInteractive();
     rect.setScrollFactor(0);
     rect.setOrigin(0);

@@ -60,7 +60,7 @@ PricesPanel.prototype.limitToProduction = function(){
 
 PricesPanel.prototype.getNextSlot = function(y){
     var w = 250;
-    var x = 1024/2 - w/2;
+    var x = Engine.getGameConfig().width/2 - w/2;
     if(this.slotsCounter >= this.slots.length){
         this.slots.push(new PriceSlot(x,y,w,90,this.buyText,this.sellText));
     }

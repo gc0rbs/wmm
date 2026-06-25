@@ -89,7 +89,7 @@ function BuildingTitle(x,y){
         UI.tooltip.hide();
     });
 
-    this.invrect = UI.scene.add.image(1024,0,'UI','invisible');
+    this.invrect = UI.scene.add.image(Engine.getGameConfig().width,0,'UI','invisible');
     this.invrect.setInteractive();
     this.invrect.setScrollFactor(0);
     this.invrect.setOrigin(0.5);

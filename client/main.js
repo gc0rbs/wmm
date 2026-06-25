@@ -16,15 +16,16 @@ var TILE_HEIGHT = 32;
 var config = {
     //type: (navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? Phaser.CANVAS : Phaser.AUTO),
     type: Phaser.WEBGL,
+    backgroundColor: '#c4d49b', // grass tone, so any not-yet-covered area blends instead of flashing black
     scale: {
-        // Keep the game's internal resolution at its designed 1024x576 (16:9) so all the
-        // viewport-dependent logic (chunk culling, panel positions) still works, but scale
-        // the canvas up to fill the browser window. 16:9 fills a widescreen with no bars.
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
+        // Variable width/height: the canvas tracks the full size of its parent (#game,
+        // which is 100vw x 100vh), so the game uses the entire browser window at native
+        // resolution. The world (chunks) covers any size; entity culling (Engine.viewWidth/
+        // viewHeight) and the boot backdrop are recomputed on resize to match.
+        mode: Phaser.Scale.RESIZE,
         parent: 'game',
-        width: VIEW_WIDTH*TILE_WIDTH,
-        height: VIEW_HEIGHT*TILE_HEIGHT
+        width: '100%',
+        height: '100%'
     },
     scene: [Boot, UI, Engine],
     dom: {

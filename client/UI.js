@@ -207,7 +207,9 @@ UI.showNotification = function (notif, i, height) {
 };
 
 UI.getConfig = function () {
-    return this.scene.sys.game.config;
+    // Live canvas size (the static game.config size does not update under Scale.RESIZE).
+    var size = this.scene.scale.gameSize;
+    return {width: size.width, height: size.height};
 };
 
 UI.getGameWidth = function () {
@@ -316,7 +318,7 @@ UI.displayItemActionPanel = function(itemID, inventory){
 
 
 UI.makeClassMenu = function () {
-    var title = new UIHolder(512, 10, 'center');
+    var title = new UIHolder(UI.getGameWidth() / 2, 10, 'center');
     title.setText(UI.textsData['class_selection_title']);
 
     var menu = new Menu();
@@ -324,7 +326,7 @@ UI.makeClassMenu = function () {
     var classw = 400;
     var classh = 195;
     var padding = 20;
-    var tlx = 1024 / 2 - classw - padding;
+    var tlx = UI.getGameWidth() / 2 - classw - padding;
     var y = 80;
     var x = tlx;
     menu.addPanel('title', title);
@@ -428,7 +430,8 @@ UI.selectClass = function (id) {
 
 UI.displayNameBox = function () {
     UI.scene.currentView = 'name';
-    var panel = new NamePanel(362, 150, 300, 140, 'Character name');
+    var w = 300, h = 140;
+    var panel = new NamePanel((UI.getGameWidth() - w) / 2, (UI.getGameHeight() - h) / 2, w, h, 'Character name');
     panel.addText(10, 20, 'Enter the name of your character.');
     panel.addBigButton('Next', UI.validatePlayerName);
     panel.display();
@@ -453,7 +456,7 @@ UI.displayRegionSelectionMenu = function () {
         UI.namePanel.hide();
     }
     var content = [];
-    content.push(UI.scene.add.image(0, 0, 'wood').setOrigin(0));
+    content.push(UI.scene.add.image(0, 0, 'wood').setOrigin(0).setDisplaySize(UI.getGameWidth(), UI.getGameHeight()));
     var scroll = UI.scene.add.image(UI.getGameWidth() / 2, UI.getGameHeight() / 2, 'bigbg');
     content.push(scroll);
     var map = UI.scene.add.image(UI.getGameWidth() / 2, UI.getGameHeight() / 2, 'worldmap');

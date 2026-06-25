@@ -318,6 +318,14 @@ Engine.create = function(){
     Engine.camera = Engine.scene.cameras.main;
     Engine.camera.setBounds(0,0,Engine.worldWidth*Engine.tileWidth,Engine.worldHeight*Engine.tileHeight);
 
+    // The canvas uses the full browser window (variable size), so the view rectangle used
+    // for entity culling (isInView) must match the actual canvas rather than a fixed 32x18.
+    Engine.computeView();
+    Engine.scene.scale.on('resize', function(){
+        Engine.computeView();
+        if(Engine.player) Engine.updateEnvironment();
+    });
+
     Engine.createMarker();
     Engine.createAnimations();
 
@@ -379,6 +387,15 @@ Engine.create = function(){
     Client.requestData();
 };
 
+// Recompute the visible view in tiles from the actual canvas size. Used by isInView()
+// to decide which entities to display; a couple of extra tiles of margin avoid popping
+// at the edges. Called on create and whenever the window is resized.
+Engine.computeView = function(){
+    var size = Engine.scene.scale.gameSize;
+    Engine.viewWidth = Math.ceil(size.width / Engine.tileWidth) + 2;
+    Engine.viewHeight = Math.ceil(size.height / Engine.tileHeight) + 2;
+};
+
 Engine.addWASD = function(){
     Engine.WASD = {
         'W': Engine.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
@@ -392,9 +409,13 @@ Engine.getGameInstance = function(){
     return Engine.scene.sys.game;
 };
 
-// TODO: rename / remove
+// Returns the CURRENT canvas size. The Phaser game config holds only the initial size and
+// does not update on resize, so under Scale.RESIZE we read the live size from the scale
+// manager instead. Callers only use .width/.height (for centering), so this keeps every
+// "(getGameConfig().width - w)/2" centering call correct at any window size.
 Engine.getGameConfig = function(){
-    return Engine.getGameInstance().config;
+    var size = Engine.scene.scale.gameSize;
+    return {width: size.width, height: size.height};
 };
 
 Engine.createMarker = function(){
@@ -709,7 +730,7 @@ Engine.updateBehindness = function(){
 };
 
 Engine.makeBuildingTitle = function(){
-    Engine.buildingTitle = new BuildingTitle(512,10);
+    Engine.buildingTitle = new BuildingTitle(Engine.getGameConfig().width/2,10);
 };
 
 // #############################
@@ -1450,7 +1471,7 @@ Engine.makeMapMenu = function(mapPanel){
 Engine.makePricesPanel = function(){
     var w = 415;
     var h = 480;
-    var prices = new PricesPanel(Math.round((1024-w)/2),80,w,h,'Prices');
+    var prices = new PricesPanel(Math.round((Engine.getGameConfig().width-w)/2),80,w,h,'Prices');
     prices.addButton(w-16,-8,'red','close',prices.hide.bind(prices),'Close');
     prices.addButton(w-40, 8, 'blue','help',null,'',UI.textsData['prices_help'],'prices_help');
     prices.moveUp(4);
