@@ -10,3 +10,5 @@ package-lock.json
 assets/sprites/buildings/*
 TODO.md
 .tmp
+.agents
+skills-lock.json
